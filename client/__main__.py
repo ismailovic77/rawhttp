@@ -1,6 +1,7 @@
 import socket
 from dto.body import Body
 from dto.header import Header
+from client.implementations.client_request_handler import ClientRequestHandler
 
 NEW_LINE = '\n'
 MANDATORY_HEADERS = ["host", 'port', 'content_type']
@@ -29,17 +30,20 @@ if __name__ == '__main__':
 
     body, body_length = get_client_body()
     header = get_client_header(body_length)
+    #header = "this is the header we're using"
 
     print("[CLIENT] Start the Socket ")
     print('****************************************')
     
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        adress = (header.get_header_values('host'), int(header.get_header_values('port')))
+        address = (header.get_header_values('host'), int(header.get_header_values('port')))
+        #address = (('localhost', 9999))
         # start client connection
-        s.connect(adress)
+        s.connect(address)
         
         # call the request client request handler
-
-        s.sendall(msg.encode())
+        crh = ClientRequestHandler(header, body)
+        request = crh.handle()
+        s.sendall(request)
         response = s.recv(1024)
         print(response.decode())
