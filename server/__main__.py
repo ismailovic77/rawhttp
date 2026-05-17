@@ -1,5 +1,5 @@
 import socketserver
-from server.handler import Handler
+from server.server_handler import Handler
 
 if __name__ == '__main__':
     HOST, PORT = ("localhost", 9999)
